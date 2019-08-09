@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<!-- https://github.com/rajivepandey/MP3RecorderJS -->
+  <head>
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Aditional from test7 -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Monkey Search</title>
+      <style>
+      .form_style
+      {
+       width: 200px;
+       margin: 0 auto;
+      }
+
+      .
+      </style>
+
+<!-- <script type="text/javascript" src="js/main.js"></script> -->
+
+
+  </head>
+  <body id="index" onload="">
+
+<script type="text/javascript" src="js/main.js"></script>    
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/mp3recorder.js"></script>
+      <!--  -->
+      <!--  -->
+      <!-- SEARCHBAR JS-->
+      <!--  -->
+      <!--  -->
+    <script>
+      var app = angular.module('live_search_app', []);
+      app.controller('live_search_controller', function($scope, $http){
+       $scope.fetchData = function(){
+        $http({
+         method:"POST",
+         // url:"connphp/controller.php",
+         url:"fetch.php",
+         data:{search_query:$scope.search_query}
+
+        }).success(function(data){
+         $scope.searchData = data;
+         // console.log("hell0 7");
+         
+        });
+       };
+
+      });
+      </script>
+      <!--  -->
+      <!--  -->
+      <!-- AUDIO BUTTON JS-->
+      <!-- https://github.com/rajivepandey/MP3RecorderJS -->
+      <!--  -->
+      <!--  -->
+    <script type="text/javascript">
+    var audio_context;
+    
+    function __log(e, data) {
+      log.innerHTML += "\n" + e + " " + (data || '');
+    }
+    
+    $(function() {
+      
+      try {
+        // webkit shim
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        navigator.getUserMedia = ( navigator.getUserMedia ||
+                         navigator.webkitGetUserMedia ||
+                         navigator.mozGetUserMedia ||
+                         navigator.msGetUserMedia);
+        window.URL = window.URL || window.webkitURL;
+      
+        var audio_context = new AudioContext;
+        __log('Audio context set up.');
+        __log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+      } catch (e) {
+        // alert('No web audio support in this browser!');
+      }
+            
+      $('.recorder .start').on('click', function() {
+        $this = $(this);
+        $recorder = $this.parent();
+        
+        navigator.getUserMedia({audio: true}, function(stream) {
+          var recorderObject = new MP3Recorder(audio_context, stream, { statusContainer: $recorder.find('.status'), statusMethod: 'replace' });
+          $recorder.data('recorderObject', recorderObject);
+          
+          recorderObject.start();
+        }, function(e) { });
+      });
+      
+      $('.recorder .stop').on('click', function() {
+        $this = $(this);
+        $recorder = $this.parent();
+        
+        recorderObject = $recorder.data('recorderObject');
+        recorderObject.stop();
+        
+        recorderObject.exportMP3(function(base64_mp3_data) {
+          var url = 'data:audio/mp3;base64,' + base64_mp3_data;
+          var au  = document.createElement('audio');
+
+          au.controls = true;
+          au.src = url;
+          $recorder.append(au);
+          
+          recorderObject.logStatus('');
+        });
+
+      });
+      
+    });
+    </script>
+  <!--  -->
+  <!--  -->
+  <!-- HTML BODY -->
+  <!--  -->
+  <!--  -->
+  <!-- ROW1 A-->
+    <div class="row"> 
+        <div class="col-md-3">
+          <div class="tile">
+            <!-- <h1 class="tile-title">Monkey Search</h1> -->
+            <div class="big_word">Monkey Search</div>
+          </div>
+      </div>
+    
+  <!-- ROW1 B-->
+      
+        <div class="col-md-6">
+          
+      </div>
+    </div>
+<!-- END HERE ROW 1-->
+<!-- ROW2 A-->
+<!-- TEXT SEARCH BAR -->
+
+
+<style type="text/css">
+  
+        .form_style
+      {
+       width: 600px;
+       margin: 0 auto;
+      }
+
+      .example
+      {
+        color: #333333;
+          background-color: transparent;
+      }
+
+</style>
+
+    <div class="row"> 
+        <div class="col-md-6">
+        <div class="tile">
+        <p>Full width:</p>
+          <h2 class="tile-title">Please type a key word</h2>
+        <form class="example" action="/action_page.php">
+          <input type="text" placeholder="Search a word..." name="search">
+          <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+
+        </div>
+
+<!--           <div class="tile"> 
+            <h3 class="tile-title">Video searche engine for you. Find objects on the video</h3>
+            <ul>
+              <li>Please type a key word </li>
+            </ul>
+            <div class="container" ng-app="live_search_app" ng-controller="live_search_controller" ng-init="fetchData()" >          
+             <br />
+             <div class="form-group">
+              <div class="input-group">
+               <span class="input-group-addon">Search</span>
+                 <input type="text" name="search_query" ng-model="search_query" ng-keyup="fetchData()" placeholder="Monkey Search" class="form-control" />
+              </div>
+             </div>
+           </div>
+         </div> -->
+       </div>
+      <!-- AUDIO SEARCH BUTTON -->
+<!--       <br/>
+      <div class="recorder">
+            Recorder 1
+            <input type="button" class="start"  value="Record" />
+            <input type="button" class="stop" value="Stop" />
+            <pre class="status"></pre>
+          </div>
+          
+          <div class="recorder">
+            Recorder 2
+            <input type="button" class="start"  value="Record" />
+            <input type="button" class="stop" value="Stop" />
+            <pre class="status"></pre>
+          </div>
+          
+          <pre id="log"></pre> -->
+
+<!-- ROW2 B-->
+        <div class="col-md-6">
+          <div class="tile">
+            <h2 class="tile-title">GALLERY</h2>
+            <div id="div_video_gallery"></div>
+            <div id="div_frame_gallery"></div>
+          </div>
+        </div>
+    </div>
+<!-- END HERE ROW 2-->
+<!-- ROW3 A-->
+    <div class="row"> 
+        <div class="col-md-6">
+        <div class="tile">
+            <h2 class="tile-title">MONKEY</h2>
+            <button onclick="playVid(15)" type="button">Play Video</button>
+            <button onclick="pauseVid()" type="button">Pause Video</button><br> 
+            <video id="myVideo" width="320" height="176">
+            <source src="videos/0012.mp4" type="video/mp4">
+            <!-- <source src="mov_bbb.ogg" type="video/ogg"> -->
+              Your browser does not support HTML5 video.
+            </video>
+
+              <script> 
+            var vid = document.getElementById("myVideo"); 
+
+            function playVid(time) { 
+
+
+              cument.getElementById("div_monkey_img").style.display = "none";
+              cument.getElementById("element").style.display = "block";
+
+              vid.currentTime = time;
+              // vid.currentTime = 20;
+              vid.play(); 
+            } 
+
+            function pauseVid() { 
+              vid.pause(); 
+            } 
+            </script> 
+
+
+            <div id="div_monkey_img"></div>
+            <div id="div_video_play"></div>
+        </div>
+        </div>
+<!-- ROW3 B-->
+        <div class="col-md-6">
+          <div class="tile">
+            <!-- <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>   -->
+            <!-- </div> -->
+              <h2 class="tile-title">JSON</h2>
+              <div id="div_json_output"></div>
+          </div>
+        </div>
+    </div>
+<!-- END HERE ROW 3-->
+
+     <!-- SEARCH BAR -->
+
+          <!-- <div class="tile"> 
+            <h3 class="tile-title">Video searche engine for you. Find objects on the video</h3>
+            <ul>
+              <li>Please type a key word </li>
+            </ul>
+
+
+            <div class="container" ng-app="live_search_app" ng-controller="live_search_controller" ng-init="fetchData()" >
+           
+        
+             <br />
+           <div class="form-group">
+            <div class="input-group">
+             <span class="input-group-addon">Search</span>
+               <input type="text" name="search_query" ng-model="search_query" ng-keyup="fetchData()" placeholder="Monkey Search" class="form-control" />
+            </div>
+           </div> -->
+           
+
+  </body>
+</html>
