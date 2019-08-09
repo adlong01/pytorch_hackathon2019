@@ -5,12 +5,20 @@ import matplotlib.pyplot as plt
 
 class SSDEngine:
     def __init__(self):
-        self.ssd = self.get_ssd()
-        self.utils = self.get_utils()
+        self.ssd = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub',
+                                'nvidia_ssd',
+                                model_math='fp32',
+                                force_reload=False).eval()
+
+        self.utils = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub',
+                                'nvidia_ssd_processing_utils')
         self.conf_thresh = 0.05
 
     def run(self):
+        # get the camera
         cam = cv2.VideoCapture(0)
+
+        # make the matplotlib figure for visualization
         fig = plt.figure(figsize=[10,10])
         ax = plt.gca()
 
@@ -18,7 +26,7 @@ class SSDEngine:
             while True:
                 ax.cla()
                 pic = self.get_image(cam)
-                outputs = self.process_image(pic)
+                outputs = self.ssd(self.prepare_image(pic))
                 boxes, cid, conf = self.process_output(outputs)[0]
                 ax.imshow(pic)
                 self.draw_boxes(ax, boxes)
@@ -47,21 +55,11 @@ class SSDEngine:
                                         edgecolor='g',
                                         linestyle='--',
                                         linewidth=1.5))
-    @staticmethod
-    def get_utils():
-        utils = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub',
-                                'nvidia_ssd_processing_utils')
 
     @staticmethod
-    def get_ssd():
-        return torch.hub.load('NVIDIA/DeepLearningExamples:torchhub',
-                                'nvidia_ssd',
-                                model_math='fp32',
-                                force_reload=False).eval()
-
-    def process_image(self, image):
-        image = np.transpose(image, (2, 0, 1))[np.newaxis, ...].astype(np.float32)
-        return self.ssd(torch.as_tensor(image))
+    def prepare_image(image):
+        # channel first, add batch dimension, convert to single prec
+        return torch.as_tensor(np.transpose(image, (2, 0, 1))[np.newaxis, ...].astype(np.float32))
 
     def process_output(self, output):
         results_per_input = self.utils.decode_results(output)
