@@ -1,1 +1,0 @@
-{"class": "donut", "detected_frames": {"0002.mp4": [3, 54], "0012.mp4": [10]}}

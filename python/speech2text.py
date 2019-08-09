@@ -14,5 +14,5 @@ def mp32string():
 	text = r.recognize_google(audio)
 	return text
 
-if __name__ = "__main__":
+if __name__ == "__main__":
 	mp32string()

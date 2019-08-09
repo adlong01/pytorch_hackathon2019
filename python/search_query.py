@@ -6,7 +6,22 @@ import pickle
 from sklearn.metrics.pairwise import cosine_similarity
 from embeddings.textmatching import get_embedding
 from embeddings.text_feature import text_feature
+import speech_recognition as sr
+import sys
+import pydub
+from pydub import AudioSegment
 
+
+def mp32string():
+	inputfile = './input/search.mp3'
+	sound = pydub.AudioSegment.from_mp3(inputfile)
+	sound.export('./input/input.wav', format="wav")
+	r = sr.Recognizer()
+	audiofile = sr.AudioFile('./input/input.wav')
+	with audiofile as source:
+	    audio = r.record(source)
+	text = r.recognize_google(audio)
+	return text
 
 class QueryExecutor:
 	def __init__(self, search_query):
@@ -95,11 +110,8 @@ class QueryExecutor:
 # ----------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-	query_executor = QueryExecutor(sys.argv[1])
+	search_text = mp32string()
+	query_executor = QueryExecutor(search_text)
 	query_executor.execute_search_query()
 
-
-
-	# if cos_sim > threshold:
-	# 	frame_candidates.append(video_frame_data[i])
 
