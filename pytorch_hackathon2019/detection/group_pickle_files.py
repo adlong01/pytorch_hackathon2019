@@ -4,7 +4,7 @@ import glob
 
 if __name__ == '__main__':
     write_file = 'group_results.p'
-    file_dir = '/Users/aaronlong/Projects/pytorch_hackathon/data/ssd_inference_32/'
+    file_dir = '/Users/aaronlong/Projects/pytorch_hackathon/data/ssd_inference_8/'
     paths = glob.glob(file_dir + '*.p')
 
     if len(glob.glob(file_dir + write_file)):
