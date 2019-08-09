@@ -5,10 +5,8 @@ import matplotlib.pyplot as plt
 
 class SSDEngine:
     def __init__(self):
-        utils = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub',
-                                'nvidia_ssd_processing_utils')
         self.ssd = self.get_ssd()
-        self.utils = utils
+        self.utils = self.get_utils()
         self.conf_thresh = 0.05
 
     def run(self):
@@ -49,6 +47,10 @@ class SSDEngine:
                                         edgecolor='g',
                                         linestyle='--',
                                         linewidth=1.5))
+    @staticmethod
+    def get_utils():
+        utils = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub',
+                                'nvidia_ssd_processing_utils')
 
     @staticmethod
     def get_ssd():
